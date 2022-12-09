@@ -55,16 +55,14 @@ const ModalForm = (props) => {
     // checkBox: Yup.boolean()
   });
   const getImage = (event) => {
-    let img = event.target.files[0];
-    const config = {
-      maxSize: 1,
-      maxWidthorHieght: 500,
-      useWebWorker: true
-    }
-    imageCompression(img , config).then(x => {
-   
-      setFiles(img);
-    })
+    let files = event.target.files;
+    let reader = new FileReader();
+    reader.readAsDataURL(files[0]);
+    reader.onload = (e) => {
+      console.log('image data: ', e.target.result);
+      setFiles(e.target.result);
+    }; 
+  
   };
   console.log(file);
   return (
