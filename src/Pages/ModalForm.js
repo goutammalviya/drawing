@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 import useSheetService from "../Services/useSheetService";
 // import modal_cross from '../../../assets/Images/modal-cross.svg';
 // import { Oval } from 'react-loader-spinner';
@@ -25,6 +25,7 @@ const ModalForm = (props) => {
     MailPrintReIssue: "",
     teamLead: "",
     teamMember: "",
+    teamMembermm: "",
     date: "",
     drawings: [
       {
@@ -54,17 +55,16 @@ const ModalForm = (props) => {
     // linkdinUrl: Yup.string().required("Required*"),
     // checkBox: Yup.boolean()
   });
-  const getImage = (event) => {
+  const getImage = (event , setFieldValue , index) => {
     let files = event.target.files;
     let reader = new FileReader();
     reader.readAsDataURL(files[0]);
     reader.onload = (e) => {
-      console.log('image data: ', e.target.result);
+      console.log("image data: ", e.target.result);
       setFiles(e.target.result);
-    }; 
-  
+      setFieldValue(`drawings.${index}.file` ,e.target.result);
+    };
   };
-  console.log(file);
   return (
     <>
       <div
@@ -423,7 +423,7 @@ const ModalForm = (props) => {
                                       >
                                         Upload drawing
                                       </label>
-                                      <Field
+                                      {/* <Field
                                         className="form-control br-none br-6 border-bottom"
                                         id=""
                                         type="file"
@@ -436,7 +436,22 @@ const ModalForm = (props) => {
                                         // }}
                                         onChange={(event) => getImage(event)}
                                         name={`drawings.${index}.file`}
-                                      />
+                                      /> */}
+                                      <Field  name={`drawings.${index}.file`}>
+                                        {({ form, field }) => {
+                                          const { setFieldValue } = form;
+                                          return (
+                                            <input
+                                              type="file"
+                                              className="form-control br-none br-6 border-bottom"
+                                              required
+                                              onChange={(e) =>
+                                                getImage(e, setFieldValue ,index)
+                                              }
+                                            />
+                                          );
+                                        }}
+                                      </Field>
                                       <ErrorMessage
                                         component={TextError}
                                         name={`drawings.${index}.file`}
