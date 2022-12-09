@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
+import imageCompression from 'browser-image-compression';
 import useSheetService from "../Services/useSheetService";
 // import modal_cross from '../../../assets/Images/modal-cross.svg';
 // import { Oval } from 'react-loader-spinner';
@@ -11,18 +11,33 @@ import {
   FieldArray,
   Form,
   Formik,
-  useFormik,
+  useFormik
 } from "formik";
 import TextError from "../Components/Formik/TextError";
 
-const ModalForm = props => {
+const ModalForm = (props) => {
   const { modalId, data, setRenderModal, sheetsData, reFetchData } = props;
-  const { setFieldValue } = useFormik();
+  const [file, setFiles] = useState("");
+  // const inputRef = React.createRef()
+  // const { setFieldValue } = useFormik();
   const initialValues = {
     project: data["Project Name"],
-    drawings: [{ name: "", file: "", noOfSets: "", size: "", execution: "" }],
+    MailPrintReIssue: "",
+    teamLead: "",
+    teamMember: "",
+    date: "",
+    drawings: [
+      {
+        name: "",
+        file: "",
+        noOfSets: "",
+        size: "",
+        execution: "",
+        revisionNo: ""
+      }
+    ]
   };
-  const handleSubmit = async values => {
+  const handleSubmit = async (values) => {
     console.log(values);
 
     // setRenderModal(false);
@@ -39,7 +54,19 @@ const ModalForm = props => {
     // linkdinUrl: Yup.string().required("Required*"),
     // checkBox: Yup.boolean()
   });
-  console.log(data);
+  const getImage = (event) => {
+    let img = event.target.files[0];
+    const config = {
+      maxSize: 1,
+      maxWidthorHieght: 500,
+      useWebWorker: true
+    }
+    imageCompression(img , config).then(x => {
+   
+      setFiles(img);
+    })
+  };
+  console.log(file);
   return (
     <>
       <div
@@ -50,10 +77,12 @@ const ModalForm = props => {
         data-bs-keyboard="false"
         tabindex="2"
         aria-labelledby="staticBackdropLabel"
-        aria-hidden="true">
+        aria-hidden="true"
+      >
         <div
           class="modal-dialog"
-          style={{ maxWidth: "inherit", margin: "50px" }}>
+          style={{ maxWidth: "inherit", margin: "50px" }}
+        >
           <div class="modal-content bgg-primary">
             <div class="modal-header">
               <h5 class="modal-title fc-white" id="staticBackdropLabel">
@@ -65,14 +94,16 @@ const ModalForm = props => {
                 style={{ backgroundColor: "white" }}
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={() => setRenderModal(false)}></button>
+                onClick={() => setRenderModal(false)}
+              ></button>
             </div>
             <div class="modal-body">
               <Formik
                 initialValues={initialValues}
                 onSubmit={handleSubmit}
                 validationSchema={validationSchema}
-                className="contact-form">
+                className="contact-form"
+              >
                 {({ values }) => (
                   <Form autoComplete="off">
                     <div className="row p-1">
@@ -82,7 +113,8 @@ const ModalForm = props => {
                             <div className="py-2">
                               <label
                                 htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
+                                className="fs-5 fc-white ff-montserrat"
+                              >
                                 Project Name
                               </label>
                               <Field
@@ -100,7 +132,8 @@ const ModalForm = props => {
                             <div className="py-2">
                               <label
                                 htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
+                                className="fs-5 fc-white ff-montserrat"
+                              >
                                 Date
                               </label>
                               <Field
@@ -111,36 +144,6 @@ const ModalForm = props => {
                               />
                               <ErrorMessage component={TextError} name="date" />
                             </div>
-
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Select Revision Number
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom"
-                                id=""
-                                as="select"
-                                placeholder="select Revision Number"
-                                name="revisionNo">
-                                {" "}
-                                <option value="">Select Revision Number</option>
-                                {sheetsData
-                                  ?.filter(item => item["Revision Number"])
-                                  .map(item => {
-                                    return (
-                                      <option value={item["Revision Number"]}>
-                                        {item["Revision Number"]}
-                                      </option>
-                                    );
-                                  })}
-                              </Field>
-                              <ErrorMessage
-                                component={TextError}
-                                name="revisionNo"
-                              />
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -150,7 +153,8 @@ const ModalForm = props => {
                             <div className="py-2">
                               <label
                                 htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
+                                className="fs-5 fc-white ff-montserrat"
+                              >
                                 Select Mail/Print/Re-issue
                               </label>
                               <Field
@@ -158,12 +162,13 @@ const ModalForm = props => {
                                 id=""
                                 as="select"
                                 placeholder="select Mail/Print/Re-issue"
-                                name="Mail/Print/Re-issue">
+                                name="MailPrintReIssue"
+                              >
                                 {" "}
                                 <option value="">Select </option>
                                 {sheetsData
-                                  ?.filter(item => item["Status"])
-                                  .map(item => {
+                                  ?.filter((item) => item["Status"])
+                                  .map((item) => {
                                     return (
                                       <option value={item["Status"]}>
                                         {item["Status"]}
@@ -179,7 +184,8 @@ const ModalForm = props => {
                             <div className="py-2">
                               <label
                                 htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
+                                className="fs-5 fc-white ff-montserrat"
+                              >
                                 Select Team Lead
                               </label>
                               <Field
@@ -187,12 +193,13 @@ const ModalForm = props => {
                                 id=""
                                 as="select"
                                 placeholder="select Team Lead"
-                                name="teamLead">
+                                name="teamLead"
+                              >
                                 {" "}
                                 <option value="">Select Team Lead</option>
                                 {sheetsData
-                                  ?.filter(item => item["Team Lead"])
-                                  .map(item => {
+                                  ?.filter((item) => item["Team Lead"])
+                                  .map((item) => {
                                     return (
                                       <option value={item["Team Lead"]}>
                                         {item["Team Lead"]}
@@ -208,7 +215,8 @@ const ModalForm = props => {
                             <div className="py-2">
                               <label
                                 htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
+                                className="fs-5 fc-white ff-montserrat"
+                              >
                                 Select Team Member
                               </label>
                               <Field
@@ -216,12 +224,13 @@ const ModalForm = props => {
                                 id=""
                                 as="select"
                                 placeholder="select Team Member"
-                                name="teamMember">
+                                name="teamMember"
+                              >
                                 {" "}
                                 <option value="">Select Team Member</option>
                                 {sheetsData
-                                  ?.filter(item => item["Team Member"])
-                                  .map(item => {
+                                  ?.filter((item) => item["Team Member"])
+                                  .map((item) => {
                                     return (
                                       <option value={item["Team Member"]}>
                                         {item["Team Member"]}
@@ -247,7 +256,45 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
+                                        Select Rev. Number
+                                      </label>
+                                      <Field
+                                        className="form-control br-none br-6 border-bottom"
+                                        id=""
+                                        as="select"
+                                        placeholder="select Revision Number"
+                                        name={`drawings.${index}.revisionNo`}
+                                      >
+                                        {" "}
+                                        <option value="">
+                                          Select Revision Number
+                                        </option>
+                                        {sheetsData
+                                          ?.filter(
+                                            (item) => item["Revision Number"]
+                                          )
+                                          .map((item) => {
+                                            return (
+                                              <option
+                                                value={item["Revision Number"]}
+                                              >
+                                                {item["Revision Number"]}
+                                              </option>
+                                            );
+                                          })}
+                                      </Field>
+                                      <ErrorMessage
+                                        component={TextError}
+                                        name="revisionNo"
+                                      />
+                                    </div>
+                                    <div className="py-2 col">
+                                      <label
+                                        htmlFor=" required"
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
                                         Select Drawing ({index + 1})
                                       </label>
                                       <Field
@@ -255,12 +302,13 @@ const ModalForm = props => {
                                         id=""
                                         as="select"
                                         placeholder="select Drawing Name"
-                                        name={`drawings.${index}.name`}>
+                                        name={`drawings.${index}.name`}
+                                      >
                                         {" "}
                                         <option value="">
                                           Select Drawing Name
                                         </option>
-                                        {sheetsData?.map(item => {
+                                        {sheetsData?.map((item) => {
                                           let headingFlag =
                                             item["Drawing Name"]?.includes("*");
 
@@ -272,7 +320,8 @@ const ModalForm = props => {
                                                   ? { fontWeight: "bold" }
                                                   : {}
                                               }
-                                              value={item["Drawing Name"]}>
+                                              value={item["Drawing Name"]}
+                                            >
                                               {item["Drawing Name"]}
                                             </option>
                                           );
@@ -286,7 +335,8 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
                                         Select Drawing Size
                                       </label>
                                       <Field
@@ -294,14 +344,15 @@ const ModalForm = props => {
                                         id=""
                                         as="select"
                                         placeholder="select Drawing Size"
-                                        name={`drawings.${index}.size`}>
+                                        name={`drawings.${index}.size`}
+                                      >
                                         {" "}
                                         <option value="">
                                           Select Drawing Size
                                         </option>
                                         {sheetsData
-                                          ?.filter(item => item["Size"])
-                                          .map(item => {
+                                          ?.filter((item) => item["Size"])
+                                          .map((item) => {
                                             return (
                                               <option value={item["Size"]}>
                                                 {item["Size"]}
@@ -317,7 +368,8 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor={`drawings.${index}.noOfSets`}
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
                                         No. Of Sets
                                       </label>
                                       <Field
@@ -335,7 +387,8 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
                                         Select Execution
                                       </label>
                                       <Field
@@ -343,14 +396,15 @@ const ModalForm = props => {
                                         id=""
                                         as="select"
                                         placeholder="select Drawing Execution"
-                                        name={`drawings.${index}.execution`}>
+                                        name={`drawings.${index}.execution`}
+                                      >
                                         {" "}
                                         <option value="">
                                           Select Execution
                                         </option>
                                         {sheetsData
-                                          ?.filter(item => item["Execution"])
-                                          .map(item => {
+                                          ?.filter((item) => item["Execution"])
+                                          .map((item) => {
                                             return (
                                               <option value={item["Execution"]}>
                                                 {item["Execution"]}
@@ -367,7 +421,8 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor={`drawings.${index}.file`}
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs-5 fc-white ff-montserrat"
+                                      >
                                         Upload drawing
                                       </label>
                                       <Field
@@ -375,12 +430,13 @@ const ModalForm = props => {
                                         id=""
                                         type="file"
                                         placeholder="upload"
-                                        onChange={event => {
-                                          setFieldValue(
-                                            `drawings.${index}.file`,
-                                            event.currentTarget.files[0]
-                                          );
-                                        }}
+                                        // onChange={event => {
+                                        //   setFieldValue(
+                                        //     `drawings.${index}.file`,
+                                        //     event.currentTarget.files[0]
+                                        //   );
+                                        // }}
+                                        onChange={(event) => getImage(event)}
                                         name={`drawings.${index}.file`}
                                       />
                                       <ErrorMessage
@@ -397,7 +453,8 @@ const ModalForm = props => {
                                             ? "btn btn-primary"
                                             : "d-none"
                                         }`}
-                                        onClick={() => remove(index)}>
+                                        onClick={() => remove(index)}
+                                      >
                                         {index > 0 && "remove"}
                                       </button>
                                     </div>
@@ -412,9 +469,10 @@ const ModalForm = props => {
                                     file: "",
                                     noOfSets: "",
                                     size: "",
-                                    execution: "",
+                                    execution: ""
                                   })
-                                }>
+                                }
+                              >
                                 Add More
                               </button>
                             </div>
@@ -429,13 +487,15 @@ const ModalForm = props => {
                           type="button"
                           id="closeModal"
                           class="btn btn-lg btn-danger d-none fw-normal ff-montserrat px-5 py-2"
-                          data-bs-dismiss="modal">
+                          data-bs-dismiss="modal"
+                        >
                           Close
                         </button>
 
                         <button
                           type="submit"
-                          className="btn btn-lg btn-primary fw-normal ff-montserrat px-5 py-2">
+                          className="btn btn-lg btn-primary fw-normal ff-montserrat px-5 py-2"
+                        >
                           Submit
                         </button>
                       </div>
