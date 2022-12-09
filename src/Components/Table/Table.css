@@ -1,0 +1,149 @@
+input[type='checkbox'],
+input[type='radio'] {
+	border-width: 3px !important;
+}
+
+.common_height_table {
+	height: 35px;
+	width: 35px;
+	border-radius: 4px;
+}
+
+/* pagination css  */
+.page-link {
+	color: black;
+}
+
+.page-item[disabled] {
+	cursor: not-allowed;
+}
+
+.active_page {
+	background: darkolivegreen !important;
+	color: white !important;
+}
+
+.table-heading {
+	white-space: nowrap;
+	border: none !important;
+	/* color: #292929; */
+	/* font-weight: 900 !important; */
+	font-size: 14px;
+}
+
+.table-data-row {
+	white-space: nowrap;
+	border: none !important;
+	font-weight: normal !important;
+	font-size: 14px;
+}
+
+.table_data_common {
+	background: rgba(235, 235, 235, 0.523);
+	backdrop-filter: blur(0px);
+	border-radius: 0px;
+	-webkit-backdrop-filter: blur(0px);
+	outline: none;
+}
+
+.table_data_common:hover {
+	outline-width: thin !important;
+	outline: solid #598216;
+	border-radius: 8px;
+}
+
+/* ----------------- TABLE ---------------------- */
+/* .myTable td {
+	vertical-align: baseline !important;
+} */
+
+.myTable {
+	border-collapse: separate !important;
+
+	border-spacing: 0 1px !important;
+}
+
+.table thead th {
+	vertical-align: middle !important;
+	background-color: white !important;
+	color: black !important;
+	/* border-bottom: 2px solid #dee2e6; */
+}
+.table>thead{
+	border-radius: 6px !important;
+}
+.myTable td {
+	padding: 16px;
+	color: black;
+	font-size: 14px !important;
+	font-weight: 500 !important;
+
+	/* padding-top: 10px; */
+	padding-bottom: 10px;
+	font-size: 12px !important;
+
+	/* border-bottom: 1px solid #bcc7a9 !important;
+	border-top: 1px solid #bcc7a9 !important; */
+}
+
+/* .myTable th:first-child */
+.myTable td:first-child {
+	/* padding-left: 20px; */
+	/* border-left: 1px solid #bcc7a9 !important; */
+	border-top-left-radius: 0px !important;
+	border-bottom-left-radius: 0px !important;
+}
+
+/* .myTable th:last-child  */
+.myTable td:last-child {
+	margin-bottom: 10px;
+
+	border-top-right-radius: 0px !important;
+	border-bottom-right-radius: 0px !important;
+	/* border-right: 1px solid #bcc7a9 !important; */
+}
+
+.myTable th,
+.myTable tr {
+	text-align: left;
+}
+
+/* --------------------------------sapna has written this css for table */
+
+td {
+	font-size: 14px !important;
+}
+
+/* .border-radius {
+	border-radius: 10px !important;
+} */
+
+.list-style-border {
+	border: none !important;
+}
+
+.design-line {
+	display: flex;
+	align-items: center;
+}
+
+.line {
+	border-top: 1px solid green;
+	flex-grow: 1;
+}
+
+.shadow-none {
+	background: #ffffff 0% 0% no-repeat padding-box !important;
+	box-shadow: 0px 0px 10px #00000014 !important;
+	opacity: 1 !important;
+	border: 0 !important;
+	border-radius: 6px !important;
+}
+.shadow-none-border {
+	background: #ffffff 0% 0% no-repeat padding-box !important;
+	box-shadow: 0px 0px 10px #00000014 !important;
+	opacity: 1 !important;
+
+	border-radius: 6px !important;
+	border-color: #598216 !important;
+}

@@ -1,0 +1,21 @@
+.min-width-4{
+    width: 8rem;
+}
+.modal.fade.modal-up{
+    z-index: 100000;
+}
+.modal-btn:hover{
+    background-color: #236fba78 !important;
+
+    color: blue !important;
+    font-weight: bold;
+    border-radius: 6px !important;
+  }
+
+  .modal-btn:focus{
+    background-color: #236fba78 !important;
+
+    color: blue !important;
+    font-weight: bold;
+    border-radius: 6px !important;
+  }

@@ -1,0 +1,134 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #242a38 !important;
+}
+
+
+:root {
+  --primary: #800080;
+  --secondary: #d9614d;
+  --light-purple: #8000800f;
+  --light-orange: #faeeec;
+  --off-white: #fefaf9;
+  --eerie-black: #141414;
+  --light-grey: #f9f9f9;
+  --grey: #efefef;
+  --white: #ffffff;
+  --blue: #1650d3;
+  --black: #000000;
+
+}
+
+.fc-white {
+  color: white !important;
+}
+.bgg-primary {
+  background-color: rgb(26, 28, 40) !important;
+}
+.bgg-secondry {
+  background-color: #242a38 !important;
+}
+/* /:/ loader css */
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #000000;
+  border-color: #000000 transparent #000000 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+.br-6 {
+  border-radius: 4px !important;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.center-xy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.center-x {
+  display: flex;
+  align-items: center;
+}
+.center-y {
+  display: flex;
+  justify-content: center;
+}
+.box-shadow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.box-shadow-light {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.box-shadow-2 {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+.border-none {
+  border: 0px !important;
+}
+.br-50 {
+  border-radius: 50%;
+}
+.bg-light-grey {
+  background-color: #f6f6f6 !important;
+}
+
+.bg-light-green {
+  background-color: #eef2e7 !important;
+}
+
+.bg-light-blue {
+  background-color: #c2d7ec;
+}
+
+.bg-light-red {
+  background-color: #fee9e9;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.middle {
+  vertical-align: middle !important;
+}
+.form-check {
+  align-items: center;
+}
+.form-check-input {
+  height: 18px !important;
+  width: 18px !important;
+}
+
+.navbar-bg {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+
+.navbar-nav .nav-link.active, .navbar-nav .show>.nav-link {
+  color: rgba(173, 173, 173, 0.9) !important;
+}
