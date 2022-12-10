@@ -31,6 +31,13 @@ function useSheetService( sheetId, sheetName) {
     }
     return await sheet.addRow(data);
   };
+  const addRows = async (sheet, data) => {
+    if (sheet === null) {
+      console.log("sheets is null");
+      sheet = await sheetService(sheetName);
+    }
+    return await sheet.addRows(data);
+  };
 
   const sheetService = async sheetName => {
     const doc = new GoogleSpreadsheet(sheetId);
@@ -46,6 +53,6 @@ function useSheetService( sheetId, sheetName) {
     await gSheetInit();
     return doc.sheetsByTitle[sheetName];
   };
-  return { getSheetRows, addRow,sheet};
+  return { getSheetRows,addRows, addRow,sheet};
 }
 export default useSheetService;

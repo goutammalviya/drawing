@@ -45,7 +45,7 @@ body {
   height: 50px;
   margin: 8px;
   border-radius: 50%;
-  border: 6px solid #000000;
+  border: 6px solid #ffffff;
   border-color: #000000 transparent #000000 transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }
