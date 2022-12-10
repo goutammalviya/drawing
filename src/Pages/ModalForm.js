@@ -80,11 +80,23 @@ const ModalForm = props => {
   };
   const validationSchema = Yup.object({
     // project: Yup.string().required("Required"),
-    // MailPrintReIssue: Yup.string().required("Required"),
-    // teamLead: Yup.string().required("Required"),
-    // teamMember: Yup.string().required("Required"),
-    // teamMembermm: Yup.string().required("Required"),
-    // date: Yup.string().required("Required"),
+    MailPrintReIssue: Yup.string().required("Required"),
+    teamLead: Yup.string().required("Required"),
+    teamMember: Yup.string().required("Required"),
+    date: Yup.string().required("Required"),
+    drawings: Yup.array()
+     .of(
+       Yup.object({
+        name: Yup.string().required("Required"),
+        file: Yup.string().required("Required"),
+        noOfSets: Yup.string().required("Required"),
+        size: Yup.string().required("Required"),
+        execution: Yup.string().required("Required"),
+        revisionNo: Yup.string().required("Required"),
+       })
+     )
+     .required('Must have friends')
+
   });
   const getImage = (event, setFieldValue, index) => {
     let files = event.target.files;
@@ -303,7 +315,7 @@ const ModalForm = props => {
                                       </Field>
                                       <ErrorMessage
                                         component={TextError}
-                                        name="revisionNo"
+                                        name={`drawings.${index}.revisionNo`}
                                       />
                                     </div>
                                     <div className="py-2 col">
@@ -342,7 +354,7 @@ const ModalForm = props => {
                                       </Field>
                                       <ErrorMessage
                                         component={TextError}
-                                        name="drawingName"
+                                        name={`drawings.${index}.name`}
                                       />
                                     </div>
                                     <div className="py-2 col">
@@ -373,7 +385,7 @@ const ModalForm = props => {
                                       </Field>
                                       <ErrorMessage
                                         component={TextError}
-                                        name="drawingName"
+                                        name={`drawings.${index}.size`}
                                       />
                                     </div>
                                     <div className="py-2 col">
@@ -422,7 +434,7 @@ const ModalForm = props => {
                                       </Field>
                                       <ErrorMessage
                                         component={TextError}
-                                        name="Execution"
+                                        name={`drawings.${index}.execution`}
                                       />
                                     </div>
 
@@ -453,7 +465,7 @@ const ModalForm = props => {
                                             <input
                                               type="file"
                                               className="form-control br-none br-6 border-bottom"
-                                              required
+                                              
                                               onChange={e =>
                                                 getImage(
                                                   e,
@@ -489,13 +501,14 @@ const ModalForm = props => {
                                 type="button"
                                 className="btn btn-primary mt-2"
                                 onClick={() =>
-                                  push({
+                                  push(  {
                                     name: "",
                                     file: "",
                                     noOfSets: "",
                                     size: "",
                                     execution: "",
-                                  })
+                                    revisionNo: "",
+                                  },)
                                 }>
                                 Add More
                               </button>
