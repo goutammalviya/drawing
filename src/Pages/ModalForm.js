@@ -1,102 +1,93 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 // import imageCompression from "browser-image-compression";
 import useSheetService from "../Services/useSheetService";
 // import modal_cross from '../../../assets/Images/modal-cross.svg';
 // import { Oval } from 'react-loader-spinner';
-import "./Modal.css";
-import * as Yup from "yup";
 import {
   ErrorMessage,
   Field,
   FieldArray,
   Form,
-  Formik,
-  useFormik,
+  Formik
 } from "formik";
+import * as Yup from "yup";
 import TextError from "../Components/Formik/TextError";
 import useDriveService from "../Services/driveService";
+import "./Modal.css";
 
-import {AdjLoader} from "../Components/loader/Loader";
 import Swal from "sweetalert2";
+import { AdjLoader } from "../Components/loader/Loader";
 
 const ModalForm = props => {
   const { modalId, data, setRenderModal, sheetsData, reFetchData } = props;
   const [file, setFiles] = useState("");
-  const [loading , setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { UploadFiles } = useDriveService();
   const { addRow, sheet } = useSheetService(
-    "1MlxW96U5AFXWomLRBRug8eCEJCohXKR267KwNydyWrw","Master");
+    "1MlxW96U5AFXWomLRBRug8eCEJCohXKR267KwNydyWrw",
+    "Master"
+  );
   // const inputRef = React.createRef()
   // const { setFieldValue } = useFormik();
   const initialValues = {
     project: data["Project Name"],
-    MailPrintReIssue: "",
-    teamLead: "",
-    teamMember: "",
-    date: "",
     drawings: [
       {
+        drawingNo: "",
         name: "",
         file: "",
         noOfSets: "",
         size: "",
         execution: "",
         revisionNo: "",
+        MailPrintReIssue: "",
       },
     ],
   };
-  const handleSubmit = async (values,{ resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     setLoading(true);
     let drawings = values.drawings;
     for (const element of drawings) {
-       console.log("/////////////====================");
-      const fileRes = await UploadFiles([element.file],"1q6eJgb_oUIQokciLMH8Hp1YDYuP8eA_m");
-      let data ={
+      console.log("/////////////====================");
+      const fileRes = await UploadFiles(
+        [element.file],
+        "1q6eJgb_oUIQokciLMH8Hp1YDYuP8eA_m"
+      );
+      let data = {
         "Project Name": values.project,
-        "Mail/Print/ReIssue": values.MailPrintReIssue,
-        "Team Lead": values.teamLead,
-        "Team Member": values.teamMember,
-        "Date": values.date,
+        Date: new Date().toJSON().split("T")[0],
         "Drawing Name": element.name,
+        "Drawing No": element.drawingNo,
         "No Of Sets": element.noOfSets,
-        "Size": element.size,
-        "Execution": element.execution,
+        Size: element.size,
+        Execution: element.execution,
         "Revision No": element.revisionNo,
+        "Mail/Print/ReIssue": element.MailPrintReIssue,
         "Drawing Url": fileRes[0].url,
-      }
+      };
       await addRow(sheet, data);
-     
-    };
-   resetForm();
-   document.getElementById("closeModal").click();
-   setRenderModal(false);
-    Swal.fire(
-      'Success!',
-      'Drawings Added Successfully!',
-      'success'
-    )
+    }
+    resetForm();
+    document.getElementById("closeModal").click();
+    setRenderModal(false);
+    Swal.fire("Success!", "Drawings Added Successfully!", "success");
     setLoading(false);
-
   };
   const validationSchema = Yup.object({
-    // project: Yup.string().required("Required"),
-    MailPrintReIssue: Yup.string().required("Required"),
-    teamLead: Yup.string().required("Required"),
-    teamMember: Yup.string().required("Required"),
-    date: Yup.string().required("Required"),
     drawings: Yup.array()
-     .of(
-       Yup.object({
-        name: Yup.string().required("Required"),
-        file: Yup.string().required("Required"),
-        noOfSets: Yup.string().required("Required"),
-        size: Yup.string().required("Required"),
-        execution: Yup.string().required("Required"),
-        revisionNo: Yup.string().required("Required"),
-       })
-     )
-     .required('Must have friends')
-
+      .of(
+        Yup.object({
+          drawingNo: Yup.string().required("Required"),
+          name: Yup.string().required("Required"),
+          file: Yup.string().required("Required"),
+          noOfSets: Yup.string().required("Required"),
+          size: Yup.string().required("Required"),
+          execution: Yup.string().required("Required"),
+          revisionNo: Yup.string().required("Required"),
+          MailPrintReIssue: Yup.string().required("Required"),
+        })
+      )
+      .required("Must have friends"),
   });
   const getImage = (event, setFieldValue, index) => {
     let files = event.target.files;
@@ -116,7 +107,7 @@ const ModalForm = props => {
         id={modalId}
         data-bs-backdrop="static"
         data-bs-keyboard="false"
-        tabindex="2"
+        tabIndex="2"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true">
         <div
@@ -125,7 +116,7 @@ const ModalForm = props => {
           <div class="modal-content bgg-primary">
             <div class="modal-header">
               <h5 class="modal-title fc-white" id="staticBackdropLabel">
-                Update Drawing
+                Upload Drawings - {data["Project Name"]}
               </h5>
               <button
                 type="button"
@@ -146,135 +137,11 @@ const ModalForm = props => {
                   <Form autoComplete="off">
                     <div className="row p-1">
                       <div className="col-12 col-md-6">
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Project Name
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom"
-                                id=""
-                                placeholder="Project Name"
-                                name="project"
-                              />
-                              <ErrorMessage
-                                component={TextError}
-                                name="project"
-                              />
-                            </div>
-
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Date
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom"
-                                id=""
-                                type="date"
-                                name="date"
-                              />
-                              <ErrorMessage component={TextError} name="date" />
-                            </div>
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Select Team Lead
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom"
-                                id=""
-                                as="select"
-                                placeholder="select Team Lead"
-                                name="teamLead">
-                                {" "}
-                                <option value="">Select Team Lead</option>
-                                {sheetsData
-                                  ?.filter(item => item["Team Lead"])
-                                  .map(item => {
-                                    return (
-                                      <option value={item["Team Lead"]}>
-                                        {item["Team Lead"]}
-                                      </option>
-                                    );
-                                  })}
-                              </Field>
-                              <ErrorMessage
-                                component={TextError}
-                                name="teamLead"
-                              />
-                            </div>
-                          </div>
-                        </div>
+                        <div className="row"></div>
                       </div>
                       <div className="col-12 col-md-6">
                         <div className="row">
-                          <div className="col-12">
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Select Mail/Print/Re-issue
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom dropdown"
-                                id=""
-                                as="select"
-                                placeholder="select Mail/Print/Re-issue"
-                                name="MailPrintReIssue">
-                                {" "}
-                                <option value="">Select </option>
-                                {sheetsData
-                                  ?.filter(item => item["Status"])
-                                  .map(item => {
-                                    return (
-                                      <option value={item["Status"]}>
-                                        {item["Status"]}
-                                      </option>
-                                    );
-                                  })}
-                              </Field>
-                              <ErrorMessage
-                                component={TextError}
-                                name="MailPrintReIssue"
-                              />
-                            </div>
-
-                            <div className="py-2">
-                              <label
-                                htmlFor=" required"
-                                className="fs-5 fc-white ff-montserrat">
-                                Select Team Member
-                              </label>
-                              <Field
-                                className="form-control br-none br-6 border-bottom"
-                                id=""
-                                as="select"
-                                placeholder="select Team Member"
-                                name="teamMember">
-                                {" "}
-                                <option value="">Select Team Member</option>
-                                {sheetsData
-                                  ?.filter(item => item["Team Member"])
-                                  .map(item => {
-                                    return (
-                                      <option value={item["Team Member"]}>
-                                        {item["Team Member"]}
-                                      </option>
-                                    );
-                                  })}
-                              </Field>
-                              <ErrorMessage
-                                component={TextError}
-                                name="teamMember"
-                              />
-                            </div>
-                          </div>
+                          <div className="col-12"></div>
                         </div>
                       </div>
                       <div className="col-12 py-2">
@@ -284,10 +151,27 @@ const ModalForm = props => {
                               {values.drawings.length > 0 &&
                                 values.drawings.map((friend, index) => (
                                   <div className="row" key={index}>
+                                        <div className="py-2 col">
+                                      <label
+                                        htmlFor={`drawings.${index}.drawingNo`}
+                                        className="fs10 fc-white ff-montserrat">
+                                        Drawing No.
+                                      </label>
+                                      <Field
+                                        name={`drawings.${index}.drawingNo`}
+                                        placeholder="Enter Drawing No."
+                                        type="text"
+                                        className="form-control br-none br-6 border-bottom"
+                                      />
+                                      <ErrorMessage
+                                        component={TextError}
+                                        name={`drawings.${index}.drawingNo`}
+                                      />
+                                    </div>
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         Select Rev. Number
                                       </label>
                                       <Field
@@ -321,7 +205,7 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         Select Drawing ({index + 1})
                                       </label>
                                       <Field
@@ -360,7 +244,7 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         Select Drawing Size
                                       </label>
                                       <Field
@@ -391,7 +275,7 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor={`drawings.${index}.noOfSets`}
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         No. Of Sets
                                       </label>
                                       <Field
@@ -409,7 +293,7 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor=" required"
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         Select Execution
                                       </label>
                                       <Field
@@ -441,7 +325,7 @@ const ModalForm = props => {
                                     <div className="py-2 col">
                                       <label
                                         htmlFor={`drawings.${index}.file`}
-                                        className="fs-5 fc-white ff-montserrat">
+                                        className="fs10 fc-white ff-montserrat">
                                         Upload drawing
                                       </label>
                                       {/* <Field
@@ -465,7 +349,6 @@ const ModalForm = props => {
                                             <input
                                               type="file"
                                               className="form-control br-none br-6 border-bottom"
-                                              
                                               onChange={e =>
                                                 getImage(
                                                   e,
@@ -480,6 +363,35 @@ const ModalForm = props => {
                                       <ErrorMessage
                                         component={TextError}
                                         name={`drawings.${index}.file`}
+                                      />
+                                    </div>
+                                    <div className="py-2 col">
+                                      <label
+                                        htmlFor=" required"
+                                        className="fs10 fc-white ff-montserrat">
+                                        Select Mail/Print...
+                                      </label>
+                                      <Field
+                                        className="form-control br-none br-6 border-bottom dropdown"
+                                        id=""
+                                        as="select"
+                                        placeholder="select Mail/Print/Re-issue"
+                                        name={`drawings.${index}.MailPrintReIssue`}>
+                                        {" "}
+                                        <option value="">Select </option>
+                                        {sheetsData
+                                          ?.filter(item => item["Status"])
+                                          .map(item => {
+                                            return (
+                                              <option value={item["Status"]}>
+                                                {item["Status"]}
+                                              </option>
+                                            );
+                                          })}
+                                      </Field>
+                                      <ErrorMessage
+                                        component={TextError}
+                                        name={`drawings.${index}.MailPrintReIssue`}
                                       />
                                     </div>
                                     <div className="py-2 col">
@@ -501,14 +413,16 @@ const ModalForm = props => {
                                 type="button"
                                 className="btn btn-primary mt-2"
                                 onClick={() =>
-                                  push(  {
+                                  push({
+                                    drawingNo: "",
                                     name: "",
                                     file: "",
                                     noOfSets: "",
                                     size: "",
                                     execution: "",
                                     revisionNo: "",
-                                  },)
+                                    MailPrintReIssue: "",
+                                  })
                                 }>
                                 Add More
                               </button>

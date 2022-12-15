@@ -12,7 +12,7 @@ const UnknownURL = () => {
 const Layout = () => {
   return (
     <div style={{height:"100vh"}} >
-      <Navbar/>
+      {/* <Navbar/> */}
       <Routes>
         <Route path="/vendor" element={<VendorTable />} />
         <Route path="/" element={<VendorTable />} />

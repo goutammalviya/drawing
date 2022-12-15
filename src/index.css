@@ -132,3 +132,7 @@ body {
 .navbar-nav .nav-link.active, .navbar-nav .show>.nav-link {
   color: rgba(173, 173, 173, 0.9) !important;
 }
+
+.fs10 {
+  font-size: 15px !important;
+}
