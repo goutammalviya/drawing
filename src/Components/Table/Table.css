@@ -56,14 +56,14 @@ input[type='radio'] {
 /* .myTable td {
 	vertical-align: baseline !important;
 } */
-.main-page .myTable{
+/* .main-page .myTable{
 	position: absolute;
 }
 .main-page thead {
-	position: sticky;
-	top: 0;
+	/* position: sticky; */
+	/* top: 0;
 	z-index: 1;
-}
+} */ */
 .myTable {
 	border-collapse: separate !important;
 

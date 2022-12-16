@@ -136,3 +136,10 @@ body {
 .fs10 {
   font-size: 15px !important;
 }
+
+
+/* /// */
+.pdf_table td {
+  color: black;
+  border: 1px solid black;
+}
