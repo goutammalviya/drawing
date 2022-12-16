@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState ,useRef} from "react";
 import BasicTable from "../Components/Table/CommonTable";
 
 import { AiFillEye } from "react-icons/ai";
-
-// import { jsPDF } from "jspdf";
+import logo from "../logo.png";
+import { jsPDF } from "jspdf";
 const VendorTable = ({ data }) => {
   const [projects, setProjects] = useState([]);
   const pdfRef = useRef(null);
@@ -77,23 +77,25 @@ const VendorTable = ({ data }) => {
   ]);
   console.log('[ projects ] >', projects)
 
-//   function generatePDF() {
-//     const content = pdfRef.current;
-//     const doc = new jsPDF();
-//     doc.html(content, {
-//         callback: function (doc) {
-//             doc.save("PlanSummary.pdf");
-//         },
-//         html2canvas: {
-//             scale: 0.234,
-//             jspdf: {
-//                 unit: "in",
-//                 format: "a4",
-//                 orientation: "portrait",
-//             },
-//         },
-//     });
-// }
+  function generatePDF() {
+    const content = pdfRef.current;
+    const doc = new jsPDF();
+    doc.html(content, {
+        callback: function (doc) {
+            doc.save(projects[0]["Project Name"]+".pdf");
+            // doc.output("dataurlnewwindow");
+        },
+        html2canvas: {
+            // scale: 0.131,
+            scale: 0.21,
+            jspdf: {
+                unit: "in",
+                format: "a4",
+                orientation: "portrait",
+            },
+        },
+    });
+}
   return (
     projects.length > 0 && (
       <div>
@@ -101,32 +103,36 @@ const VendorTable = ({ data }) => {
         style={{ background: "#1a1c28" }}
         className="card border-0 p-2 m-2 m-md-4 box-shadow"
       >
-        <BasicTable
+        {/* <BasicTable
           headingCenter={["Date", "Transmittled"]}
           itemsCenter={["Date", "Transmittled"]}
           data={projects}
           columns={columns}
-        />
-      </div>
-      <table ref={pdfRef} style={{color: "black" , background: "white"}} class="table table-striped table-bordered pdf_table">
-      <button onClick={generatePDF}>Download PDF</button>
-        <tr>
-          <td></td>
-          <td></td>
-          <td colspan="4">
+        /> */}
+      </div> 
+      <button className="btn btn-primary" onClick={generatePDF}>Download PDF</button>
+      
+      <div style={{display:"flex",justifyContent:'center',background:"white"}}>
+      <div>
+      <div ref={pdfRef} className='d-flex justify-content-center' style={{padding:'50px',color: "black" , background: "white",fontWeight:"bold",width:"1000px"}}>
+      <table  class="table table-striped table-bordered pdf_table"  >
+        <tr className="xyz">
+          <td colspan='2' className="abc" ><img src={logo}/></td>
+        
+          <td colspan="6" className="abc2" >
             RAJIV ASSOCIATES
             <br />
             TRANSMITTAL
           </td>
-          <td></td>
+     
         </tr>
         <tr>
           <td>Project</td>
-          <td> - {projects[0]["Project Name"]}</td>
-          <td></td>
+          <td colspan="2"> {projects[0]["Project Name"]}</td>
+          
           <td colspan="2">Date</td>
-          <td></td>
-          <td>{projects[0]['Date']}</td>
+          <td colspan="2">{projects[0]['Date']}</td>
+          
         </tr>
         <tr>
           <td>Issued To</td>
@@ -137,26 +143,26 @@ const VendorTable = ({ data }) => {
           <td></td>
         </tr>
         <tr>
-          <td>Dept.</td>
           <td></td>
           <td></td>
-          <td colspan="2">Print /Mail</td>
-          <td>Mail</td>
+          <td></td>
+          <td colspan="2"></td>
+          <td></td>
           <td></td>
         </tr>
-        <tr>
+        <tr className="pdfDataRow" style={{backgroundColor:"rgb(192 192 192)"}}>
           <td>Drg. No.</td>
-          <td>Descrip on</td>
+          <td>Description</td>
           <td>No. Of Sheets</td>
           <td>Revision</td>
           <td>Mail/Print/ReIssue</td>
           <td>Print Size</td>
-          <td>Execu on</td>
+          <td>Execution</td>
         </tr>
         {
           projects && projects.map((item , index)=>{
             return (
-              <tr>
+              <tr className="pdfDataRow" >
               <td>{item['Drawing No']}</td>
               <td>{item['Drawing Name']}</td>
               <td>{item['No Of Sets']}</td>
@@ -232,13 +238,16 @@ const VendorTable = ({ data }) => {
           <td>ML-Ar. Ashish Rathee</td>
         </tr>
         <tr>
-          <td colspan="6">
+          <td style={{backgroundColor:"rgb(192 192 192)", textAlign:"center"}} colspan="12">
             202 Sartaj ML-Apartment, E-38 Ring Road, Rajouri Garden, New Delhi-
             110027
           </td>
-          <td></td>
+       
         </tr>
       </table>
+      </div>
+      </div>
+      </div>
     </div>
     )
   );

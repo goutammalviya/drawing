@@ -139,7 +139,20 @@ body {
 
 
 /* /// */
+.xyz>.abc{
+  border-right: none !important;
+}
+.xyz>.abc2{
+  border-left: none !important;
+  font-size: 20px !important;
+}
+
 .pdf_table td {
   color: black;
-  border: 1px solid black;
+  border: 1px solid black !important;
+}
+.pdf_table .pdfDataRow td {
+
+  text-align: center;
+
 }
