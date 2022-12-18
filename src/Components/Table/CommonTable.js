@@ -17,6 +17,7 @@ const BasicTable = ({
   itemsCenter,
   showExport,
   showCheckBox,
+  setPdfData,
   ...props
 }) => {
 
@@ -28,7 +29,7 @@ const BasicTable = ({
     []
   )
 
-// showCheckBox = true;
+showCheckBox = showCheckBox;
   const dispatch = useDispatch()
   let location = useLocation();
   const tableInstance = useTable(
@@ -70,18 +71,20 @@ const BasicTable = ({
     {
         selectedFlatRows: selectedFlatRows.forEach((row) => {
             let data = Object.assign({}, row.original);
-            console.log(data);
             delete data._sheet;
             delete data._rowNumber;
             delete data._rawData;
             delete data.id;
+            
+            console.log('[ data ] >', data)
             exportCsv.push(data)
         })
     },
     null,
     2
 );
-console.log(checkboxData)
+// console.log(checkboxData)
+
 
   return (
     <>

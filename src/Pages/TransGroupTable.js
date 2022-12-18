@@ -3,9 +3,12 @@ import BasicTable from "../Components/Table/CommonTable";
 
 import { AiFillEye } from "react-icons/ai";
 import logo from "../logo.png";
-import { jsPDF } from "jspdf";
+import { jsPDF } from 'jspdf';
+import { ColumnFilter } from './ColumnFilter';
 const VendorTable = ({ data }) => {
   const [projects, setProjects] = useState([]);
+  const [pdfData , setPdfData] = useState("");
+  console.log('[ pdfData ] >', pdfData)
   const pdfRef = useRef(null);
   useEffect(() => {
     setProjects(data);
@@ -15,47 +18,47 @@ const VendorTable = ({ data }) => {
     {
       Header: "Date",
       accessor: "Date",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Drawing No",
       accessor: "Drawing No",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Drawing Name",
       accessor: "Drawing Name",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "No Of Sets",
       accessor: "No Of Sets",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Revision No",
       accessor: "Revision No",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Size",
       accessor: "Size",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Execution",
       accessor: "Execution",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Mail/Print/ReIssue",
       accessor: "Mail/Print/ReIssue",
-      Filter: ""
+      Filter: ColumnFilter
     },
     {
       Header: "Drawing Url",
       accessor: "Drawing Url",
-      Filter: "",
+      Filter: ColumnFilter,
       Cell: ({ row: { original } }) => {
         return (
           <span
@@ -75,7 +78,7 @@ const VendorTable = ({ data }) => {
       }
     }
   ]);
-  console.log('[ projects ] >', projects)
+ 
 
   function generatePDF() {
     const content = pdfRef.current;
@@ -103,16 +106,18 @@ const VendorTable = ({ data }) => {
         style={{ background: "#1a1c28" }}
         className="card border-0 p-2 m-2 m-md-4 box-shadow"
       >
-        {/* <BasicTable
+        <BasicTable
           headingCenter={["Date", "Transmittled"]}
           itemsCenter={["Date", "Transmittled"]}
           data={projects}
           columns={columns}
-        /> */}
+          showCheckBox={true}
+          setPdfData={setPdfData}
+        />
       </div> 
       <button className="btn btn-primary" onClick={generatePDF}>Download PDF</button>
       
-      <div style={{display:"flex",justifyContent:'center',background:"white"}}>
+      <div style={{display:"none",justifyContent:'center',background:"white"}}>
       <div>
       <div ref={pdfRef} className='d-flex justify-content-center' style={{padding:'50px',color: "black" , background: "white",fontWeight:"bold",width:"1000px"}}>
       <table  class="table table-striped table-bordered pdf_table"  >
