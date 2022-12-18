@@ -156,3 +156,12 @@ body {
   text-align: center;
 
 }
+
+.table-responsive {
+  max-height: 85vh;
+}
+thead {
+  position: sticky;
+  top: -8px;
+  z-index: 100;
+}
