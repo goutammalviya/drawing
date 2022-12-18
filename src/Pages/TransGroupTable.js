@@ -66,7 +66,7 @@ const VendorTable = ({ data }) => {
             <div className=" bg-light-green d-flex p-2 cursor-pointer">
               <div>
                 <AiFillEye />
-                {original["Drawing Url"]}
+               View Drawing
               </div>
             </div>
           </span>
