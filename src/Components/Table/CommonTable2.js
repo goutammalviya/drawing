@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import { useRowSelect, useTable  , useFilters} from 'react-table';
-import Checkbox from './Checkbox';
+import { useRowSelect, useTable, useFilters } from "react-table";
+import Checkbox from "./Checkbox";
 import { CSVLink } from "react-csv";
 
 //importing custum components
-import './Table.css'
+import "./Table.css";
 //importing custum components
 
-import { ColumnFilter } from '../../Pages/ColumnFilter';
+import { ColumnFilter } from "../../Pages/ColumnFilter";
 import logo from "../../logo.png";
 import { jsPDF } from "jspdf";
 import Swal from "sweetalert2";
@@ -22,36 +22,37 @@ const BasicTable = ({
   showCheckBox,
   ...props
 }) => {
-
   const [pdfData, setPdfData] = useState([]);
   const pdfRef = useRef(null);
   const defaultColumn = React.useMemo(
     () => ({
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     }),
     []
-  )
+  );
 
-showCheckBox = showCheckBox;
+  showCheckBox = showCheckBox;
   const tableInstance = useTable(
     {
       columns,
-      data
+      data,
     },
     useFilters,
     useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => {
-        if(!showCheckBox) return columns;
+    hooks => {
+      hooks.visibleColumns.push(columns => {
+        if (!showCheckBox) return columns;
         return [
           {
             id: "selection",
             Header: ({ getToggleAllRowsSelectedProps }) => (
               <Checkbox {...getToggleAllRowsSelectedProps()} />
             ),
-            Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps()} />
+            Cell: ({ row }) => (
+              <Checkbox {...row.getToggleRowSelectedProps()} />
+            ),
           },
-          ...columns
+          ...columns,
         ];
       });
     }
@@ -68,107 +69,137 @@ showCheckBox = showCheckBox;
 
   var exportCsv = [];
   useEffect(() => {
-    let sum  = 0;
-     selectedFlatRows.forEach((row) => {
+    let sum = 0;
+    selectedFlatRows.forEach(row => {
+      let data = Object.assign({}, row.original);
+      delete data._sheet;
+      delete data._rowNumber;
+      delete data._rawData;
+      delete data.id;
+      sum += parseInt(data["No Of Sets"]);
+      exportCsv.push(data);
+    });
+    if (
+      setPdfData !== undefined &&
+      setPdfData !== null &&
+      exportCsv.length > 0
+    ) {
+      exportCsv[0]["sum"] = sum;
+      setPdfData(exportCsv);
+    }
+  }, [selectedFlatRows]);
+  // eslint-disable-next-line
+  const checkboxData = JSON.stringify(
+    {
+      selectedFlatRows: selectedFlatRows.forEach(row => {
         let data = Object.assign({}, row.original);
         delete data._sheet;
         delete data._rowNumber;
         delete data._rawData;
         delete data.id;
-        sum += parseInt(data['No Of Sets']);
-        exportCsv.push(data);
-      })
-    if (setPdfData !== undefined && setPdfData !== null && exportCsv.length > 0) {
-      exportCsv[0]['sum'] = sum;
-      setPdfData(exportCsv);
-    }
-
-  }, [selectedFlatRows]);
-  // eslint-disable-next-line
-  const checkboxData = JSON.stringify(
-    {
-        selectedFlatRows: selectedFlatRows.forEach((row) => {
-            let data = Object.assign({}, row.original);
-            delete data._sheet;
-            delete data._rowNumber;
-            delete data._rawData;
-            delete data.id;
-            // exportCsv.push(data)
-        })
+        // exportCsv.push(data)
+      }),
     },
     null,
     2
-);
-// console.log(checkboxData)
-function generatePDF() {
-  if(pdfData.length === 0){
-   alert("please select atleast one data")
-    return;
-  }
-  const content = pdfRef.current;
-  const doc = new jsPDF();
-  doc.html(content, {
-    callback: function (doc) {
-      doc.save(projects[0]["Project Name"] + ".pdf");
-      // doc.output("dataurlnewwindow");
-    },
-    html2canvas: {
-      // scale: 0.131,
-      scale: 0.21,
-      jspdf: {
-        unit: "in",
-        format: "a4",
-        orientation: "portrait",
+  );
+  // console.log(checkboxData)
+  function generatePDF() {
+    if (pdfData.length === 0) {
+      alert("please select atleast one data");
+      return;
+    }
+    const content = pdfRef.current;
+    const doc = new jsPDF();
+    doc.html(content, {
+      callback: function (doc) {
+        doc.save(projects[0]["Project Name"] + ".pdf");
+        // doc.output("dataurlnewwindow");
       },
-    },
-  });
-}
+      html2canvas: {
+        // scale: 0.131,
+        scale: 0.21,
+        jspdf: {
+          unit: "in",
+          format: "a4",
+          orientation: "portrait",
+        },
+      },
+    });
+  }
 
   return (
     <>
-      <div className='table-responsive  p-0 p-sm-2 mt-1'>
+      <div className="table-responsive  p-0 p-sm-2 mt-1">
         <div></div>
-        {showExport&&
-        <button className='btn btn-success my-2'> <CSVLink className="dropdown-item" style={{ fontWeight: 'bold' }} data={exportCsv}>Export</CSVLink>  </button>
-        }
-        
-        <button className="btn btn-primary my-2" onClick={generatePDF}>
-            Download PDF
+        {showExport && (
+          <button className="btn btn-success my-2">
+            {" "}
+            <CSVLink
+              className="dropdown-item"
+              style={{ fontWeight: "bold" }}
+              data={exportCsv}>
+              Export
+            </CSVLink>{" "}
           </button>
-        <table {...getTableProps()} className='myTable table'>
+        )}
+
+        <button className="btn btn-primary my-2" onClick={generatePDF}>
+          Download PDF
+        </button>
+        <table {...getTableProps()} className="myTable table">
           <thead>
-            {headerGroups.map((headerGroup) => {
+            {headerGroups.map(headerGroup => {
               return (
                 <>
-                  <tr style={{borderRadius: "10px !important"}} {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
+                  <tr
+                    style={{ borderRadius: "10px !important" }}
+                    {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map(column => (
                       <>
                         {headingCenter.includes(column.Header) ? (
-                          <th  style={{borderRadius: "10px !important" , color: "blue"}} className=' text-center table-heading fs-5' {...column.getHeaderProps()}>
-                           
-                         
-                            {(column.id !== "selection") ?
-                              column.render('Header') :
+                          <th
+                            style={{
+                              borderRadius: "10px !important",
+                              color: "blue",
+                            }}
+                            className=" text-center table-heading fs-5"
+                            {...column.getHeaderProps()}>
+                            {column.id !== "selection" ? (
+                              column.render("Header")
+                            ) : (
                               <span className="p-5">
-                                {column.render('Header')}
-                                <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                {column.render("Header")}
+                                <div>
+                                  {column.canFilter
+                                    ? column.render("Filter")
+                                    : null}
+                                </div>
                                 {/* <img src={sort} className="ml-2" alt="^" /> */}
                               </span>
-                            }
+                            )}
                           </th>
                         ) : (
-                          <th  style={{borderRadius: "10px !important", color: "blue"}} className='table-heading fs-5' {...column.getHeaderProps()}>
-                            {(column.id !== "selection") ?
-                              (
-                                <>
-                                  {column.render('Header')}
-                                  <div>{column.canFilter ? column.render('Filter') : null}</div>
-                                  {/* <img src={sort} className="ml-2" alt="^" /> */}
-                                </>
-                              )
-                              :
-                              column.render('Header')
-                            }
+                          <th
+                            style={{
+                              borderRadius: "10px !important",
+                              color: "blue",
+                            }}
+                            className="table-heading fs-5"
+                            {...column.getHeaderProps()}>
+                            {column.id !== "selection" ? (
+                              <>
+                                {column.render("Header")}
+                                <div>
+                                  {column.canFilter
+                                    ? column.render("Filter")
+                                    : null}
+                                </div>
+                                {/* <img src={sort} className="ml-2" alt="^" /> */}
+                              </>
+                            ) : (
+                              column.render("Header")
+                            )}
                           </th>
                         )}
                       </>
@@ -178,21 +209,28 @@ function generatePDF() {
               );
             })}
           </thead>
-          <tbody style={{background: "white"}} {...getTableBodyProps()}>
-            {rows.map((row) => {
+          <tbody style={{ background: "white" }} {...getTableBodyProps()}>
+            {rows.map(row => {
               prepareRow(row);
               return (
-                <tr style={{borderRadius: "0px"}} {...row.getRowProps()} className='table_data_common'>
-                  {row.cells.map((cell) => {
+                <tr
+                  style={{ borderRadius: "0px" }}
+                  {...row.getRowProps()}
+                  className="table_data_common">
+                  {row.cells.map(cell => {
                     return (
                       <>
                         {itemsCenter.includes(cell.column.Header) ? (
-                          <td {...cell.getCellProps()} className='text-center table-data-row middle'>
-                            {cell.render('Cell')}
+                          <td
+                            {...cell.getCellProps()}
+                            className="text-center table-data-row middle">
+                            {cell.render("Cell")}
                           </td>
                         ) : (
-                          <td {...cell.getCellProps()} className='fs-12 table-data-row middle'>
-                            {cell.render('Cell')}
+                          <td
+                            {...cell.getCellProps()}
+                            className="fs-12 table-data-row middle">
+                            {cell.render("Cell")}
                           </td>
                         )}
                       </>
@@ -203,7 +241,7 @@ function generatePDF() {
             })}
           </tbody>
         </table>
-        { (
+        {
           <div
             style={{
               display: "none",
@@ -247,7 +285,13 @@ function generatePDF() {
                     <td colspan="2">&nbsp;Ref. No.</td>
                     <td colspan="2"></td>
                   </tr>
+                  <tr>
+                    <td>&nbsp;Dept.</td>
+                    <td colspan="2"></td>
 
+                    <td colspan="2">&nbsp;Print /Mail</td>
+                    <td colspan="2"></td>
+                  </tr>
                   <tr
                     className="pdfDataRow"
                     style={{ backgroundColor: "rgb(192 192 192)" }}>
@@ -274,6 +318,42 @@ function generatePDF() {
                       );
                     })}
                   <tr>
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                  <tr>
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                  <tr>
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                  <tr>
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                  <tr>
                     <td>&nbsp;Total no. of Sheets Issued</td>
                     <td></td>
                     <td style={{ textAlign: "center" }}>{pdfData[0]?.sum}</td>
@@ -286,6 +366,98 @@ function generatePDF() {
                     <td>&nbsp;Remarks</td>
                     <td colspan="6"></td>
                   </tr>
+                  <tr>
+                    <td> &nbsp;Sent Through</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;Sent By</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">&nbsp;Receiver's Signature with Stamp</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                    
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                    <tr className = "hideBorderRow">
+                    <td> &nbsp;</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+               
+                   
                   <tr>
                     <td
                       style={{
@@ -301,10 +473,10 @@ function generatePDF() {
               </div>
             </div>
           </div>
-        )}
+        }
       </div>
     </>
-  )
-}
+  );
+};
 
 export default BasicTable;
