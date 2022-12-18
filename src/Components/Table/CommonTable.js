@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRowSelect, useTable  , useFilters} from 'react-table';
 import Checkbox from './Checkbox';
 import { CSVLink } from "react-csv";
@@ -9,6 +9,7 @@ import './Table.css'
 import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { ColumnFilter } from '../../Pages/ColumnFilter';
+import { useCallback } from 'react';
 
 const BasicTable = ({
   data,
@@ -30,8 +31,6 @@ const BasicTable = ({
   )
 
 showCheckBox = showCheckBox;
-  const dispatch = useDispatch()
-  let location = useLocation();
   const tableInstance = useTable(
     {
       columns,
@@ -66,6 +65,23 @@ showCheckBox = showCheckBox;
   } = tableInstance;
 
   var exportCsv = [];
+  useEffect(() => {
+    let sum  = 0;
+     selectedFlatRows.forEach((row) => {
+        let data = Object.assign({}, row.original);
+        delete data._sheet;
+        delete data._rowNumber;
+        delete data._rawData;
+        delete data.id;
+        sum += parseInt(data['No Of Sets']);
+        exportCsv.push(data);
+      })
+    if (setPdfData !== undefined && setPdfData !== null && exportCsv.length > 0) {
+      exportCsv[0]['sum'] = sum;
+      setPdfData(exportCsv);
+    }
+
+  }, [selectedFlatRows]);
   // eslint-disable-next-line
   const checkboxData = JSON.stringify(
     {
@@ -75,9 +91,7 @@ showCheckBox = showCheckBox;
             delete data._rowNumber;
             delete data._rawData;
             delete data.id;
-            
-            console.log('[ data ] >', data)
-            exportCsv.push(data)
+            // exportCsv.push(data)
         })
     },
     null,

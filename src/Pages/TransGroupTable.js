@@ -7,8 +7,8 @@ import { jsPDF } from 'jspdf';
 import { ColumnFilter } from './ColumnFilter';
 const VendorTable = ({ data }) => {
   const [projects, setProjects] = useState([]);
-  const [pdfData , setPdfData] = useState("");
-  console.log('[ pdfData ] >', pdfData)
+  const [pdfData , setPdfData] = useState([]);  
+  let num = 0;
   const pdfRef = useRef(null);
   useEffect(() => {
     setProjects(data);
@@ -106,6 +106,7 @@ const VendorTable = ({ data }) => {
         style={{ background: "#1a1c28" }}
         className="card border-0 p-2 m-2 m-md-4 box-shadow"
       >
+        <button className="btn btn-primary" onClick={generatePDF}>Download PDF</button>
         <BasicTable
           headingCenter={["Date", "Transmittled"]}
           itemsCenter={["Date", "Transmittled"]}
@@ -115,7 +116,6 @@ const VendorTable = ({ data }) => {
           setPdfData={setPdfData}
         />
       </div> 
-      <button className="btn btn-primary" onClick={generatePDF}>Download PDF</button>
       
       <div style={{display:"none",justifyContent:'center',background:"white"}}>
       <div>
@@ -158,14 +158,14 @@ const VendorTable = ({ data }) => {
         <tr className="pdfDataRow" style={{backgroundColor:"rgb(192 192 192)"}}>
           <td>Drg. No.</td>
           <td>Description</td>
-          <td>No. Of Sheets</td>
+          <td>No. Of Shets</td>
           <td>Revision</td>
           <td>Mail/Print/ReIssue</td>
           <td>Print Size</td>
           <td>Execution</td>
         </tr>
         {
-          projects && projects.map((item , index)=>{
+          pdfData && pdfData.map((item , index)=>{
             return (
               <tr className="pdfDataRow" >
               <td>{item['Drawing No']}</td>
@@ -183,8 +183,8 @@ const VendorTable = ({ data }) => {
         <tr>
           <td>Total no. of Sheets Issued</td>
           <td></td>
+          <td style={{textAlign:'center'}}>{pdfData[0]?.sum}</td>
           <td></td>
-          <td style={{ textAlign: "right" }}>0</td>
           <td></td>
           <td></td>
           <td></td>
