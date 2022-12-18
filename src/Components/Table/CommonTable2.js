@@ -10,6 +10,7 @@ import './Table.css'
 import { ColumnFilter } from '../../Pages/ColumnFilter';
 import logo from "../../logo.png";
 import { jsPDF } from "jspdf";
+import Swal from "sweetalert2";
 
 const BasicTable = ({
   data,
@@ -100,6 +101,10 @@ showCheckBox = showCheckBox;
 );
 // console.log(checkboxData)
 function generatePDF() {
+  if(pdfData.length === 0){
+   alert("please select atleast one data")
+    return;
+  }
   const content = pdfRef.current;
   const doc = new jsPDF();
   doc.html(content, {
